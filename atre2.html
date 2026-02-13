@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Queen Lilly ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&family=Sacramento&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #d81b60;
+            --soft-pink: #f8bbd0;
+            --deep-purple: #4a148c;
+            --star-color: #ffd700;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+
+        body {
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #fce4ec 100%);
+            font-family: 'Quicksand', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden; text-align: center;
+            padding: 15px;
+        }
+
+        #particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+        .container {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            padding: clamp(25px, 7vw, 45px);
+            border-radius: 35px;
+            box-shadow: 0 20px 60px rgba(216, 27, 96, 0.15);
+            width: 100%; max-width: 480px;
+            position: relative; z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            animation: appear 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes appear {
+            from { opacity: 0; transform: scale(0.8) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        h1 { 
+            color: var(--primary-pink); 
+            font-family: 'Dancing Script', cursive; 
+            font-size: clamp(2rem, 8vw, 3rem); 
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .cute-gif { 
+            width: 100%; max-width: 160px; height: auto; 
+            border-radius: 25px; margin-bottom: 20px;
+            filter: drop-shadow(0 10px 20px rgba(216, 27, 96, 0.2));
+        }
+
+        .btn {
+            padding: 14px 35px; font-size: 1.1rem; border: none; border-radius: 50px;
+            cursor: pointer; color: white; font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-yes { background: linear-gradient(45deg, #ff4081, #d81b60); }
+        .btn-no { background: #adb5bd; }
+        .btn:hover { transform: translateY(-5px) scale(1.05); }
+
+        .hidden { display: none !important; }
+
+        .gift-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 25px; }
+        .gift-box { font-size: clamp(3rem, 11vw, 4rem); cursor: pointer; animation: float 3s ease-in-out infinite; }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .final-letter-box {
+            background: #ffffff; padding: 25px; border-radius: 25px;
+            border: 2px solid var(--soft-pink);
+            text-align: left; max-height: 45vh; overflow-y: auto;
+        }
+
+        .special-text {
+            font-family: 'Sacramento', cursive; 
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            color: var(--deep-purple); line-height: 1.4;
+        }
+
+        .signature {
+            display: block; text-align: right; margin-top: 20px;
+            font-weight: 700; color: var(--primary-pink); font-family: 'Dancing Script', cursive; font-size: 1.4rem;
+        }
+
+        .particle { position: fixed; pointer-events: none; z-index: 2; animation: fall linear forwards; }
+        @keyframes fall {
+            from { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="playMusic()">
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="particles-container"></div>
+
+    <div class="container" id="page1">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2l4bmNtYnR5bnZxcG0zZm14cW14bW14bW14bW14bW14bW14bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" class="cute-gif">
+        <h1>Will you be my Valentine?</h1>
+        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <button class="btn btn-yes" onclick="goToPage2()">YES ❤️</button>
+            <button class="btn btn-no" id="noBtn" onmouseover="runAway()" ontouchstart="runAway()">NO 💔</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="page2">
+        <h1>For My Queen Lilly 👑</h1>
+        <p style="color: #6a1b9a; font-weight: 600; margin-bottom: 10px;">Open all your surprises:</p>
+        <div class="gift-section">
+            <div id="g1" class="gift-box" onclick="openGift(1)">🌹</div>
+            <div id="g2" class="gift-box" onclick="openGift(2)">🍫</div>
+            <div id="g3" class="gift-box" onclick="openGift(3)">💌</div>
+        </div>
+    </div>
+
+    <div class="container hidden" id="page3">
+        <h1 id="gift-title" style="font-family: 'Dancing Script';"></h1>
+        <div id="gift-content"></div>
+        <button class="btn btn-yes" style="margin-top: 25px; width: 100%;" onclick="handleBack()">Back to Gifts ↺</button>
+    </div>
+
+    <div class="container hidden" id="final-page">
+        <h1>To My Everything ❤️</h1>
+        <div class="final-letter-box">
+            <p class="special-text">
+                Lilly 3youn kiba i love you soo much this is our first valentine together happy valentine day i love you so much now and tomorrow and forever i promise to be always here for you i promise to work hard to see you as my wife and mother of our kids i love you i love every single little bit of you you're so sweet really beautiful you're soo kind you soooo cute aaah i love you soo much you're so perfect, i can't wait to be with you for our entire life i can't wait to do everything for you and with you i love you.
+            </p>
+            <span class="signature">- Your rakiboon 💖</span>
+        </div>
+    </div>
+
+    <script>
+        let openedGifts = new Set();
+        
+        function playMusic() { document.getElementById('bgMusic').play().catch(() => {}); }
+
+        function createParticle() {
+            const container = document.getElementById('particles-container');
+            const particle = document.createElement('div');
+            const isStar = Math.random() > 0.6;
+            particle.innerHTML = isStar ? '✨' : '❤️';
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            if (isStar) particle.style.color = '#ffd700';
+            const duration = Math.random() * 3 + 3;
+            particle.style.animationDuration = duration + 's';
+            container.appendChild(particle);
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+        setInterval(createParticle, 300);
+
+        const gifts = {
+            1: { 
+                title: "A Rose For You 🌹", 
+                content: `<img src="https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyZmUxaHZ2OHAxazI4bDMyaGlhOHI1cnphY2xlZWkyd3B0bTV6ZXY2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" style="width:100%; border-radius:15px;">
+                          <p style="font-family:Sacramento; font-size:1.8rem; margin-top:10px;">You're beautiful as a flower mouah (3afawiya) mon plus belle fleur 😚.</p>` 
+            },
+            2: { 
+                title: "Sweet Chocolates 🍫", 
+                content: `<img src="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyNmR5aDEyanN0NTN6OTdib2pya2U0MjRzb2IxYW9qNGE1emR2NWZndiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Wfv0rk5lwyZzU3itKl/giphy.gif" style="width:100%; border-radius:15px;">
+                          <p style="font-family:Sacramento; font-size:1.8rem; margin-top:10px;">brown as your eyes Sweet like you , my sweetie.</p>` 
+            },
+            3: { 
+                title: "A Love Note 💌", 
+                content: `<img src="https://media.giphy.com/media/LpDmM2wSt6Hm5fKJVa/giphy.gif" style="width:100%; border-radius:15px;">
+                          <p style="font-family:Sacramento; font-size:1.8rem; margin-top:10px;">My heart Always yours , i am all yours,i love youuuuu .</p>` 
+            }
+        };
+
+        function runAway() {
+            const btn = document.getElementById("noBtn");
+            btn.style.position = "fixed";
+            btn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+            btn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+        }
+
+        function goToPage2() {
+            document.getElementById("page1").classList.add("hidden");
+            document.getElementById("page2").classList.remove("hidden");
+        }
+
+        function openGift(id) {
+            openedGifts.add(id);
+            document.getElementById("g" + id).style.opacity = "0.3";
+            const gift = gifts[id];
+            document.getElementById("gift-title").innerText = gift.title;
+            document.getElementById("gift-content").innerHTML = gift.content;
+            document.getElementById("page2").classList.add("hidden");
+            document.getElementById("page3").classList.remove("hidden");
+        }
+
+        function handleBack() {
+            if (openedGifts.size === 3) {
+                document.getElementById("page3").classList.add("hidden");
+                document.getElementById("final-page").classList.remove("hidden");
+                setInterval(createParticle, 50); 
+            } else {
+                document.getElementById("page3").classList.add("hidden");
+                document.getElementById("page2").classList.remove("hidden");
+            }
+        }
+    </script>
+</body>
+</html>
