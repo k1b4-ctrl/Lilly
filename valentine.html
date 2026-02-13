@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine 🌹</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  background:radial-gradient(circle at center, #ffb6d5, #ff5fa2);
+  animation: bgShift 20s ease-in-out infinite alternate;
+}
+@keyframes bgShift{
+  0%{background:radial-gradient(circle at center, #ffb6d5, #ff5fa2);}
+  50%{background:radial-gradient(circle at center, #e07fc3, #b366ff);}
+  100%{background:radial-gradient(circle at center, #ff8abf, #ff4d8d);}
+}
+
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;opacity:0.7;animation:twinkle 4s infinite ease-in-out;}
+@keyframes twinkle{0%,100%{opacity:0.2;}50%{opacity:1;}}
+
+.container{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  height:100%;
+}
+
+/* Flower */
+#flowerWrapper{
+  position:relative;
+  width:180px;
+  height:180px;
+  cursor:pointer;
+  z-index:2;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition:all 1s ease;
+}
+#bigGlow{
+  position:absolute;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,0,0,.35),rgba(255,100,100,.2),transparent 70%);
+  filter:blur(50px);
+  animation:pulse 2s ease-in-out infinite alternate;
+}
+@keyframes pulse{
+  0%{transform:scale(1);opacity:.4}
+  50%{transform:scale(1.3);opacity:.2}
+  100%{transform:scale(1.5);opacity:.1}
+}
+#flower{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:64px;
+  animation:beat 1s infinite alternate;
+  color:white;
+}
+@keyframes beat{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.2)}
+  100%{transform:scale(1)}
+}
+
+/* Box */
+.box{
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(16px);
+  border-radius:30px;
+  padding:40px 30px;
+  box-shadow:0 0 60px rgba(255,255,255,0.25);
+  z-index:2;
+  opacity:0;
+  transition:opacity 0.8s ease, transform 0.6s ease;
+}
+.box.show{opacity:1;}
+h1{font-size:1.9rem;margin-bottom:30px;}
+.buttons{display:flex;justify-content:center;gap:25px;}
+button{
+  border:none;
+  padding:14px 32px;
+  font-size:1.05rem;
+  border-radius:40px;
+  cursor:pointer;
+  transition:all 0.25s ease;
+}
+button:hover{transform:scale(1.1);}
+.yes{background:#fff;color:#ff4d8d;font-weight:600;}
+.no{background:rgba(255,255,255,0.25);color:white;}
+.back{margin-top:25px;background:rgba(255,255,255,0.25);color:white;}
+#final{opacity:0;transition:opacity 0.8s ease;}
+#final.show{opacity:1;}
+#final p{font-size:1.1rem;line-height:1.7;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+  <!-- Flower -->
+  <div id="flowerWrapper">
+    <div id="bigGlow"></div>
+    <div id="flower">🌹</div>
+  </div>
+
+  <!-- Question -->
+  <div class="box" id="questionBox">
+    <h1 id="questionText">Will you be my Valentine? 💕</h1>
+    <div class="buttons">
+      <button class="yes">Yes 💗</button>
+      <button class="no">No 🙈</button>
+    </div>
+  </div>
+
+  <!-- Final Message -->
+  <div class="box" id="final">
+    <p>
+      Lillyinu, I know it's too late but I love you so so so so much. You can't imagine how much I really love you.<br>
+      You're my everything, thank you for choosing me to be your Valentine. Mouah 😚
+    </p>
+    <button class="back">Back 💫</button>
+  </div>
+</div>
+
+<script>
+// Stars
+const starsContainer = document.getElementById("stars");
+for(let i=0;i<120;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.width = `${Math.random()*3 + 1}px`;
+  s.style.height = s.style.width;
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.animationDuration=(Math.random()*3+2)+"s";
+  starsContainer.appendChild(s);
+}
+
+// Elements
+const flowerWrapper = document.getElementById("flowerWrapper");
+const box = document.getElementById("questionBox");
+const finalBox = document.getElementById("final");
+const qText = document.getElementById("questionText");
+const yesBtn = document.querySelector(".yes");
+const noBtn = document.querySelector(".no");
+const backBtn = document.querySelector(".back");
+
+let yesScale = 1;
+
+// Sad messages array
+const sadMessages = [
+  "Oh no... I can't hear that again 😢",
+  "Please don't say no... 😔",
+  "I will cry if you say no 😭",
+  "My heart is breaking... 💔",
+  "Nooooo... why? 😢"
+];
+
+// Hide boxes initially
+box.style.display = "none";
+finalBox.style.display = "none";
+
+// Flower click -> show question
+flowerWrapper.addEventListener("click", ()=>{
+  flowerWrapper.style.opacity="0";
+  flowerWrapper.style.transform="scale(0.8)";
+  setTimeout(()=>{
+    flowerWrapper.style.display="none";
+    box.style.display="block";
+    setTimeout(()=>box.classList.add("show"),50);
+  },600);
+});
+
+// No button -> escape + shrink + Yes grows + random sad message
+noBtn.addEventListener("click", ()=>{
+  // Random sad message
+  qText.textContent = sadMessages[Math.floor(Math.random()*sadMessages.length)];
+
+  // Make Yes grow
+  yesScale += 0.2;
+  yesBtn.style.transform = `scale(${yesScale})`;
+
+  // Move and shrink No button
+  const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+  const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+  const x = Math.random()*maxX - window.innerWidth/2 + 20;
+  const y = Math.random()*maxY - window.innerHeight/2 + 20;
+  const scale = Math.random()*0.6 + 0.4; // 0.4 - 1
+  noBtn.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+});
+
+// Yes button -> go to final message
+yesBtn.addEventListener("click", ()=>{
+  box.classList.remove("show");
+  setTimeout(()=>{
+    box.style.display="none";
+    finalBox.style.display="block";
+    setTimeout(()=>finalBox.classList.add("show"),50);
+  },500);
+});
+
+// Back button
+backBtn.addEventListener("click", ()=>{
+  box.classList.remove("show");
+  finalBox.classList.remove("show");
+  setTimeout(()=>{
+    finalBox.style.display="none";
+    box.style.display="block";
+    qText.textContent = "Will you be my Valentine? 💕";
+    yesScale=1;
+    yesBtn.style.transform="scale(1)";
+    noBtn.style.transform="translate(0,0) scale(1)";
+    setTimeout(()=>box.classList.add("show"),50);
+  },200);
+});
+</script>
+
+</body>
+</html>
