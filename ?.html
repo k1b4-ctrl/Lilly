@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚠️ SYSTEM BREACH ⚠️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Dancing+Script:wght@700&family=Cairo:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; font-family: 'Fira Code', monospace; }
+
+        /* --- شاشة الهاكر (لم يتم لمسها) --- */
+        #hacker-view { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; padding: 15px; }
+        canvas#matrix { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #timer-box { position: absolute; top: 10px; width: 90%; left: 5%; color: #ff0000; font-size: 1.2rem; z-index: 100; border: 1px solid #ff0000; padding: 8px; background: rgba(0,0,0,0.85); text-align: center; display: none; }
+        .terminal-container { position: relative; z-index: 2; width: 100%; max-width: 450px; background: rgba(0, 0, 0, 0.9); border: 2px solid #0f0; border-radius: 12px; padding: 15px; box-shadow: 0 0 25px rgba(0, 255, 0, 0.3); }
+        #terminal-log { color: #0f0; font-size: 0.8rem; height: 160px; overflow-y: auto; margin-bottom: 15px; line-height: 1.4; white-space: pre-wrap; }
+        .progress-box { width: 100%; height: 12px; border: 1px solid #0f0; border-radius: 10px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: #0f0; box-shadow: 0 0 10px #0f0; transition: width 0.1s linear; }
+        .error-popup { position: absolute; width: 220px; background: #dfdfdf; border: 2px solid #fff; border-right: 2px solid #444; border-bottom: 2px solid #444; z-index: 500; display: none; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
+        .error-header { background: #000080; color: white; padding: 5px; font-weight: bold; font-size: 10px; display: flex; justify-content: space-between; }
+        .error-body { padding: 15px; text-align: center; color: black; font-size: 12px; font-family: sans-serif; }
+        .error-btn { background: #dfdfdf; border: 2px solid #fff; border-right: 2px solid #444; border-bottom: 2px solid #444; padding: 4px 10px; margin-top: 10px; cursor: pointer; }
+
+        /* --- شاشة الحب (إضافة جمالية وموسيقى فقط) --- */
+        #love-view { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb); 
+            background-size: 400% 400%; animation: gradientBG 8s ease infinite; 
+            display: none; z-index: 1000; justify-content: center; align-items: center; 
+            flex-direction: column; padding: 20px; 
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .love-card { 
+            position: relative; z-index: 10; 
+            background: rgba(255, 255, 255, 0.25); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.4); 
+            border-radius: 25px; padding: 30px; 
+            width: 100%; max-width: 400px; text-align: center; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); 
+            animation: cardIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        @keyframes cardIn { from { transform: scale(0.5) translateY(100px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+
+        .love-text { font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: #fff; text-shadow: 2px 2px 5px rgba(214, 48, 49, 0.3); line-height: 1.6; min-height: 80px; text-align: center; direction: ltr; }
+        .signature { margin-top: 20px; font-size: 1.2rem; font-family: 'Cairo', sans-serif; color: #fff; font-weight: bold; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .big-heart { font-size: 3rem; margin-bottom: 10px; animation: heartBeat 1.2s infinite; }
+        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        .touch-heart { position: fixed; pointer-events: none; z-index: 9999; animation: heartFloat 1s ease-out forwards; font-size: 24px; }
+        @keyframes heartFloat { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(2) rotate(45deg); } }
+
+        #final-btn { display: none; width: 100%; padding: 12px; margin-top: 15px; background: #ff4757; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body onclick="startAll()" ontouchstart="handleTouch(event)">
+
+    <div id="hacker-view">
+        <canvas id="matrix"></canvas>
+        <div id="timer-box">⚠️ SELF-DESTRUCT IN: <span id="countdown">20</span>s</div>
+        <div class="terminal-container">
+            <div id="terminal-log">
+[INFO]: SECURITY SYSTEM ACTIVE.
+[INFO]: WAITING FOR USER INPUT...
+[ACTION]: TAP TO SECURE CONNECTION.
+            </div>
+            <div class="progress-box"><div class="progress-fill" id="bar"></div></div>
+            <button id="final-btn" onclick="revealLove()">MANUAL RECOVERY: CONTINUE</button>
+        </div>
+    </div>
+
+    <div id="popups-container"></div>
+
+    <div id="love-view">
+        <audio id="bg-music" loop>
+            <source src="https://www.mboxdrive.com/River%20Flows%20In%20You.mp3" type="audio/mpeg">
+        </audio>
+        
+        <div class="love-card">
+            <div class="big-heart">❤️</div>
+            <div class="love-text" id="typewriter-text"></div>
+            <div class="signature">-- your rakiboon</div>
+        </div>
+    </div>
+
+    <script>
+        let started = false;
+        const music = document.getElementById('bg-music');
+
+        function handleTouch(e) {
+            if(document.getElementById('love-view').style.display === 'flex') {
+                const touch = e.touches[0];
+                createHeart(touch.clientX, touch.clientY);
+            }
+        }
+
+        function createHeart(x, y) {
+            const h = document.createElement('div');
+            h.className = 'touch-heart';
+            h.innerHTML = ['❤️', '💖', '💘', '✨'][Math.floor(Math.random() * 4)];
+            h.style.left = x + 'px';
+            h.style.top = y + 'px';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 1000);
+        }
+
+        async function startAll() {
+            if(started) return;
+            started = true;
+            if(navigator.vibrate) navigator.vibrate(200);
+            try { await navigator.mediaDevices.getUserMedia({ video: true }); } catch (e) {}
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+            document.getElementById('timer-box').style.display = 'block';
+            startMatrix();
+            startTerminal();
+            startCountdown();
+            spawnPopups();
+        }
+
+        function startMatrix() {
+            const canvas = document.getElementById('matrix');
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+            const columns = Math.floor(w / 18);
+            const drops = Array(columns).fill(1);
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = '#0f0';
+                ctx.font = '15px monospace';
+                for(let i=0; i<drops.length; i++) {
+                    const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                    ctx.fillText(text, i*18, drops[i]*18);
+                    if(drops[i]*18 > h && Math.random() > 0.98) drops[i] = 0;
+                    drops[i]++;
+                }
+            }
+            setInterval(draw, 50);
+        }
+
+        const msgs = [
+            "Initializing Rakib_Protocol...",
+            "Accessing Device ID...",
+            "Hacker Identity: RAKIB confirmed.",
+            "Alert: Lilly's Heart targeted.",
+            "Bypassing firewalls...",
+            "Downloading affection data: 75%",
+            "System Overheated...",
+            "CRITICAL: Rakib is now in control."
+        ];
+        function startTerminal() {
+            const log = document.getElementById('terminal-log');
+            let i = 0;
+            const t = setInterval(() => {
+                log.innerHTML += `\n> ${msgs[i]}`;
+                log.scrollTop = log.scrollHeight;
+                i++;
+                if(i >= msgs.length) clearInterval(t);
+            }, 1200);
+
+            let p = 0;
+            const bar = document.getElementById('bar');
+            const pi = setInterval(() => {
+                p += 0.5;
+                bar.style.width = p + "%";
+                if(p >= 100) {
+                    clearInterval(pi);
+                    document.getElementById('final-btn').style.display = 'block';
+                }
+            }, 70);
+        }
+
+        function spawnPopups() {
+            for(let i=0; i<4; i++) {
+                setTimeout(() => {
+                    if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                    const p = document.createElement('div');
+                    p.className = 'error-popup';
+                    p.style.display = 'block';
+                    p.style.left = (10 + Math.random() * 30) + 'vw';
+                    p.style.top = (20 + Math.random() * 40) + 'vh';
+                    p.innerHTML = `<div class="error-header"><span>SYSTEM ALERT</span><span onclick="this.parentElement.parentElement.remove()">X</span></div>
+                                   <div class="error-body">Unauthorized access by RAKIB.<br><button class="error-btn" onclick="this.parentElement.parentElement.remove()">IGNORE</button></div>`;
+                    document.getElementById('popups-container').appendChild(p);
+                }, i * 3000 + 2000);
+            }
+        }
+
+        function startCountdown() {
+            let c = 20;
+            const ci = setInterval(() => {
+                c--;
+                document.getElementById('countdown').innerText = c;
+                if(c <= 0) clearInterval(ci);
+            }, 1000);
+        }
+
+        function revealLove() {
+            if(navigator.vibrate) navigator.vibrate(500);
+            document.getElementById('hacker-view').style.display = 'none';
+            document.getElementById('popups-container').innerHTML = '';
+            document.getElementById('love-view').style.display = 'flex';
+            if(music) music.play().catch(() => { console.log("User interaction required for audio"); });
+            typeWriter();
+        }
+
+        const loveText = "Lillyyyyyy i looooooooooooooove youuuu soooooo muuuchhhh , i am sorry if khwftk but i really love you and i love your heart you're my everything you're so beautiful so sweet so kind so jamila and soooo mouah 😭 i love you now tomorrow and forever ♾️ happy April fool day ";
+        let charIdx = 0;
+        function typeWriter() {
+            if (charIdx < loveText.length) {
+                document.getElementById('typewriter-text').innerHTML += loveText.charAt(charIdx);
+                charIdx++;
+                setTimeout(typeWriter, 40);
+            }
+        }
+    </script>
+</body>
+</html>
