@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LILLY OS v4.1 - STABLE EDITION</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Orbitron:wght@400;900&family=Cinzel:wght@700&display=swap');
+
+        :root {
+            --matrix-green: #00ff41;
+            --cyber-blue: #00d4ff;
+            --lilly-pink: #ff007f;
+            --deep-black: #050508;
+            --glass-bg: rgba(10, 10, 15, 0.85);
+        }
+
+        * { box-sizing: border-box; font-family: 'Fira Code', monospace; user-select: none; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--deep-black); overflow: hidden; color: var(--matrix-green); }
+
+        /* تأثير الخطوط القديمة */
+        body::before {
+            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            z-index: 2000; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+
+        .screen { position: absolute; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 10; opacity: 0; transition: opacity 0.4s ease; }
+        .active { display: flex !important; opacity: 1; }
+
+        /* --- BOOT --- */
+        #boot-screen { padding: 40px; font-size: 14px; line-height: 1.6; background: black; color: var(--matrix-green); overflow-y: hidden; }
+        .boot-line { margin-bottom: 4px; text-shadow: 0 0 5px var(--matrix-green); }
+
+        /* --- LOGIN --- */
+        #login-screen { justify-content: center; align-items: center; background: #000; }
+        .login-card { border: 1px solid var(--cyber-blue); padding: 40px; border-radius: 15px; text-align: center; backdrop-filter: blur(10px); width: 320px; }
+        input { background: transparent; border: none; border-bottom: 2px solid var(--cyber-blue); color: #fff; font-size: 20px; text-align: center; outline: none; width: 100%; margin-bottom: 20px; font-family: 'Orbitron'; }
+
+        /* --- DESKTOP --- */
+        #desktop { background: #050508 url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=1920') no-repeat center; background-size: cover; }
+        .taskbar { position: absolute; bottom: 0; width: 100%; height: 45px; background: rgba(0,0,0,0.9); display: flex; align-items: center; padding: 0 15px; z-index: 100; }
+        .desktop-icons { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .icon { width: 80px; text-align: center; color: #fff; cursor: pointer; font-size: 10px; transition: 0.2s; }
+        .icon img { width: 45px; display: block; margin: 0 auto 5px; }
+
+        /* --- WINDOWS --- */
+        .window { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; background: var(--glass-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; display: none; flex-direction: column; z-index: 500; }
+        .win-header { padding: 10px 15px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; font-size: 12px; color: #fff; }
+        .win-content { padding: 25px; text-align: center; color: #fff; }
+
+        .btn { background: transparent; border: 1px solid var(--cyber-blue); color: var(--cyber-blue); padding: 10px; cursor: pointer; width: 100%; margin-top: 10px; font-family: 'Orbitron'; }
+        .btn:hover { background: var(--cyber-blue); color: #000; }
+        .btn-pink { border-color: var(--lilly-pink); color: var(--lilly-pink); }
+        .btn-pink:hover { background: var(--lilly-pink); color: #fff; }
+
+        #result-screen { z-index: 2000; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
+        canvas { margin: 10px auto; display: block; border-radius: 50%; border: 4px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+
+    <div id="boot-screen" class="screen active"></div>
+
+    <div id="login-screen" class="screen">
+        <div class="login-card">
+            <h2 style="color:var(--cyber-blue); font-family:'Orbitron'">LILLY OS</h2>
+            <input type="password" id="pass" placeholder="PASSWORD">
+            <button class="btn" onclick="checkPass()">LOGIN</button>
+        </div>
+    </div>
+
+    <div id="intercept-screen" class="screen" style="justify-content:center; align-items:center; background:#000; text-align:center;">
+        <div style="font-size:50px; color:var(--lilly-pink); margin-bottom:20px;">❤️</div>
+        <div id="romance-msg" style="font-family:'Cinzel'; color:#fff; font-size:22px; padding:20px;"></div>
+    </div>
+
+    <div id="desktop" class="screen">
+        <div class="desktop-icons">
+            <div class="icon" onclick="openGame()"><img src="https://cdn-icons-png.flaticon.com/512/3039/3039430.png">TRUTH</div>
+            <div class="icon" onclick="openVault()"><img src="https://cdn-icons-png.flaticon.com/512/2961/2961157.png">VAULT</div>
+        </div>
+        <div class="taskbar">
+            <span id="clock" style="color:#fff; font-weight:bold; margin-left:auto;"></span>
+        </div>
+
+        <div id="game-window" class="window">
+            <div class="win-header"><span>TRUTH_ENGINE.exe</span><span onclick="closeGame()" style="cursor:pointer">X</span></div>
+            <div class="win-content" id="setup-view">
+                <p>Number of Players:</p>
+                <input type="number" id="p-count" value="2" style="width:60px">
+                <button class="btn" onclick="generateInputs()">NEXT</button>
+            </div>
+            <div class="win-content" id="names-view" style="display:none">
+                <div id="inputs-container"></div>
+                <button class="btn" onclick="initGame()">START ENGINE</button>
+            </div>
+            <div class="win-content" id="wheel-view" style="display:none">
+                <canvas id="wheel" width="250" height="250"></canvas>
+                <button class="btn btn-pink" id="spin-btn" onclick="spin()">SPIN</button>
+            </div>
+        </div>
+
+        <div id="vault-window" class="window">
+            <div class="win-header"><span>ENCRYPTED_VAULT</span><span onclick="closeVault()" style="cursor:pointer">X</span></div>
+            <div class="win-content">
+                <h2 style="color:var(--lilly-pink)">Private Access Only</h2>
+                <p>Memories are being synced... ❤️</p>
+                <button class="btn btn-pink" onclick="closeVault()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="padding:30px; text-align:center; border:1px solid var(--lilly-pink); border-radius:15px; max-width:350px;">
+            <h1 id="winner-name" style="font-family:'Orbitron'; margin:0 0 15px 0;"></h1>
+            <p id="question-text" style="color:#fff; font-size:18px; line-height:1.4;"></p>
+            <button class="btn btn-pink" onclick="backToWheel()">NEXT ROUND</button>
+        </div>
+    </div>
+
+<script>
+    const passKey = "kiba2006";
+    const bootLines = ["> CORE LOADED.", "> BIOMETRIC CHECK...", "> LILLY_V4 DETECTED.","> CORE LOADED.", "> hacked.", "> again i said hacked and the hacker is kiba.",  "> SECURITY BYPASSED.", "> AWAITING KEY..."];
+    
+    // --- 70+ Questions ---
+    const allTruths = [
+        "What is your most embarrassing childhood memory?","Have you ever peed in a pool?","What is the most illegal thing you have ever done?","Have you ever lied to get out of a date?","What is your biggest 'guilty pleasure' movie?","Have you ever cheated on a test?","What is the most embarrassing thing in your search history?","Have you ever been caught picking your nose?","What is the longest you've gone without showering?","Have you ever talked to yourself in the mirror?","What is the most childish thing you still do?","Have you ever had a crush on a teacher?","What is your most awkward date story?","Have you ever sent a text to the wrong person about them?","What is the silliest thing you've done for love?","Have you ever stalked an ex on social media?","What is your most embarrassing nickname?","Have you ever lied about your age?","What is the weirdest dream you've ever had?","Have you ever laughed so hard you peed?","What is the most cringe thing you've posted online?","Have you ever practiced kissing on your hand?","What is your biggest secret?","Have you ever used a fake name?","What is the most embarrassing thing your parents know about you?","Have you ever ghosted someone?","What is your worst habit?","Have you ever tripped in public?","What is the most expensive thing you've broken?","Have you ever eavesdropped on a conversation?","What is the silliest fear you have?","Have you ever cried in a movie?","What is the most embarrassing thing you've said to a stranger?","Have you ever had food in your teeth all day without knowing?","What is your secret weird talent?","Have you ever lied on your CV?","What is the most embarrassing song in your playlist?","Have you ever been rejected by a crush?","What is the most embarrassing thing currently in your room?","Have you ever talked in your sleep?","What is your biggest turn-off in a person?","Have you ever pretended to be sick to stay home?","What is the most embarrassing thing you've done for a dare?","Have you ever had a crush on a cartoon character?","What is the most embarrassing thing you've done at a party?","Have you ever liked your own post accidentally?","What is the most embarrassing thing you did to look 'cool'?","Have you ever been caught in a big lie?","What is the most embarrassing thing you've done in school?","Have you ever called a teacher 'Mom'?","What is the most embarrassing thing you've done in a gym?","Have you ever pretended to be on the phone to avoid someone?","What is the most embarrassing thing you've done at a wedding?","Have you ever sent a risky text and regretted it?","What is the most embarrassing thing you've done while home alone?","Have you ever been caught singing in the shower?","What is the most embarrassing thing you've done on a first date?","Have you ever had a wardrobe malfunction?","Have you ever accidentally spit on someone while talking?","What is the most embarrassing thing you've done in an elevator?","Have you ever had a crush on a friend's sibling?","What is the most embarrassing thing you've done while shopping?","Have you ever pretended to be someone else?","What is the most embarrassing thing you've done in a taxi?","Have you ever fallen asleep in public?","What is the most embarrassing thing you've done at a funeral?","Have you ever lied about meeting a celebrity?","What is the most embarrassing thing you've done on a plane?","Have you ever accidentally walked into the wrong house?","What is your most embarrassing habit when alone?","If you were an animal, which would be the most embarrassing?","What is the last thing you searched on your phone?"
+    ];
+
+    // --- 22 Compliments for Lilly ---
+    const allLillyFavors = [
+        "Lilly, your smile is the most beautiful thing in the world. ✨","Every code in this OS exists to make you happy. 💖","Lilly, you are Kiba's greatest inspiration. 💋","Your kindness is a superpower that heals everything. ❤️","Lilly, you are the most precious person I know. ✨","You deserve all the stars in the sky. 🌟","Lilly, you are the ultimate prize of life. 🏆","System message: Lilly is 100% perfect. ✅","Kiba's heart belongs entirely to you. ❤️","Lilly, you make the world better. 🌸","You are the source of all my happiness. 😊","Lilly, you are more beautiful than any sunset. 🌅","you're the the cutest ever! ","Lilly, you are the true Queen of this kingdom. 👑","Lilly you're the kindest ever. 🤗","Lilly, you are the melody to my favorite song. 🎵","You are the light in developer darkness. 💡","Lilly, you are a masterpiece. 🎨","the developer love you more  than code can express. ❤️","Lilly, you are the center of the universe. 🌌","You are the most wonderful person ever. ✨","Lilly, you win because you are simply the best! 🥇"
+    ];
+
+    let activeTruths = [...allTruths];
+    let activeLillyFavors = [...allLillyFavors];
+    let pNames = [];
+    let angle = 0;
+
+    // --- Boot Sequence ---
+    let bIdx = 0;
+    function runBoot() {
+        const bs = document.getElementById('boot-screen');
+        if(bIdx < bootLines.length) {
+            const div = document.createElement('div');
+            div.className = 'boot-line';
+            div.innerText = bootLines[bIdx];
+            bs.appendChild(div);
+            bIdx++;
+            setTimeout(runBoot, 200);
+        } else {
+            setTimeout(() => {
+                bs.classList.remove('active');
+                document.getElementById('login-screen').classList.add('active');
+            }, 400);
+        }
+    }
+
+    // Start immediately when HTML is ready
+    document.addEventListener("DOMContentLoaded", runBoot);
+
+    function checkPass() {
+        if(document.getElementById('pass').value === passKey) {
+            document.getElementById('login-screen').classList.remove('active');
+            document.getElementById('romance-msg').innerText = "Access Granted. I Love You, Lilly. ❤️";
+            document.getElementById('intercept-screen').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('intercept-screen').classList.remove('active');
+                document.getElementById('desktop').classList.add('active');
+                updateClock();
+            }, 2000);
+        } else { alert("ACCESS DENIED"); }
+    }
+
+    function updateClock() {
+        const n = new Date();
+        document.getElementById('clock').innerText = n.getHours().toString().padStart(2,'0') + ":" + n.getMinutes().toString().padStart(2,'0');
+        setTimeout(updateClock, 1000);
+    }
+
+    function openGame() { document.getElementById('game-window').style.display = 'flex'; }
+    function closeGame() { document.getElementById('game-window').style.display = 'none'; }
+    function openVault() { document.getElementById('vault-window').style.display = 'flex'; }
+    function closeVault() { document.getElementById('vault-window').style.display = 'none'; }
+
+    function generateInputs() {
+        const c = document.getElementById('p-count').value;
+        const cont = document.getElementById('inputs-container');
+        cont.innerHTML = "";
+        for(let i=0; i<c; i++) cont.innerHTML += `<input type="text" class="p-in" placeholder="Name ${i+1}" style="margin:5px 0; font-size:14px; border-bottom:1px solid var(--cyber-blue)">`;
+        document.getElementById('setup-view').style.display = 'none';
+        document.getElementById('names-view').style.display = 'block';
+    }
+
+    function initGame() {
+        pNames = Array.from(document.querySelectorAll('.p-in')).map(i => i.value).filter(v => v !== "");
+        if(pNames.length < 2) return alert("Need at least 2 players!");
+        document.getElementById('names-view').style.display = 'none';
+        document.getElementById('wheel-view').style.display = 'block';
+        renderWheel();
+    }
+
+    const can = document.getElementById('wheel');
+    const ctx = can.getContext('2d');
+
+    function renderWheel() {
+        const arc = (Math.PI * 2) / pNames.length;
+        ctx.clearRect(0,0,250,250);
+        pNames.forEach((n, i) => {
+            ctx.fillStyle = i % 2 === 0 ? "#00d4ff" : "#050508";
+            ctx.beginPath(); ctx.moveTo(125,125); ctx.arc(125,125,120, angle + i*arc, angle + (i+1)*arc); ctx.fill();
+            ctx.fillStyle = "#fff"; ctx.save(); ctx.translate(125,125); ctx.rotate(angle + i*arc + arc/2);
+            ctx.fillText(n, 50, 5); ctx.restore();
+        });
+    }
+
+    function spin() {
+        let speed = Math.random() * 0.4 + 0.3;
+        let t = setInterval(() => {
+            angle += speed; speed *= 0.98;
+            renderWheel();
+            if(speed < 0.002) { clearInterval(t); finish(); }
+        }, 20);
+    }
+
+    function finish() {
+        const arc = (Math.PI * 2) / pNames.length;
+        const index = Math.floor(pNames.length - (angle % (Math.PI * 2) / arc)) % pNames.length;
+        const winner = pNames[index];
+        const winEl = document.getElementById('winner-name');
+        winEl.innerText = winner;
+        
+        if(winner.toLowerCase().trim() === "lilly") {
+            if(activeLillyFavors.length === 0) activeLillyFavors = [...allLillyFavors];
+            const r = Math.floor(Math.random()*activeLillyFavors.length);
+            document.getElementById('question-text').innerText = activeLillyFavors.splice(r, 1)[0];
+            winEl.style.color = "var(--lilly-pink)";
+        } else {
+            if(activeTruths.length === 0) activeTruths = [...allTruths];
+            const r = Math.floor(Math.random()*activeTruths.length);
+            document.getElementById('question-text').innerText = activeTruths.splice(r, 1)[0];
+            winEl.style.color = "#fff";
+        }
+        document.getElementById('result-screen').classList.add('active');
+    }
+
+    function backToWheel() { document.getElementById('result-screen').classList.remove('active'); }
+</script>
+</body>
+</html>
